@@ -43,12 +43,14 @@ objects:
           memory: '512Mi'
           cpu: '500m'
       strategy:
-        dockerStrategy:
+        sourceStrategy:
           from:
             kind: ImageStreamTag
             name: python-36-centos7:latest
-        type: Docker
+          env: []
+        type: Source
       triggers:
+        - type: ConfigChange
         - type: ImageChange
           imageChange: {}
 
