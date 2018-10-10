@@ -863,4 +863,4 @@ if __name__ == "__main__":
 
     # TODO: gather memory information, bundle psutil library?
     with open(_OUTPUT_JSON_PATH, 'w') as hw_info_file:
-        json.dump({'cpu': cpu_info}, hw_info_file, sort_keys=True, indent=2))
+        json.dump({'cpu': cpu_info}, hw_info_file, sort_keys=True, indent=2)
