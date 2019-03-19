@@ -830,6 +830,18 @@ class Win32CPUInfo(CPUInfoBase):
         return self.is_AMD() and self.info[0]['Family'] in [6, 15]
 
 
+def platforminfo():
+    return {
+        "architecture": platform.architecture(),
+        "machine": platform.machine(),
+        "node": platform.node(),
+        "platform": platform.platform(),
+        "processor": platform.processor(),
+        "release": platform.release(),
+        "version": platform.version(),
+    }
+
+
 if sys.platform.startswith('linux'):  # variations: linux2,linux-i386 (any others?)
     cpuinfo = LinuxCPUInfo
 elif sys.platform.startswith('irix'):
@@ -848,7 +860,10 @@ elif sys.platform.startswith('cygwin'):
 else:
     cpuinfo = CPUInfoBase
 
+
 cpu = cpuinfo()
+platform = platforminfo()
+
 
 if __name__ == "__main__":
 
@@ -861,6 +876,13 @@ if __name__ == "__main__":
             r = getattr(cpu, name)()
             cpu_info[_VALUE_MAPPING.get(name, name)] = r
 
-    # TODO: gather memory information, bundle psutil library?
     with open(_OUTPUT_JSON_PATH, 'w') as hw_info_file:
-        json.dump({'cpu': cpu_info}, hw_info_file, sort_keys=True, indent=2)
+        json.dump(
+            {
+                'cpu': cpu_info,
+                'platform': platform,
+            },
+            hw_info_file,
+            sort_keys=True,
+            indent=2
+        )
