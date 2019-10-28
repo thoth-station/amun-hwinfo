@@ -5,12 +5,13 @@ metadata:
   annotations:
     description: A buildconfig for Amun's inspect-hwinfo.
     openshift.io/display-name: Amun's inspect-hwinfo buildconfig
-    version: 0.0.1
+    version: 0.1.0
     tags: poc,amun.thoth,ai-stacks
     template.openshift.io/documentation-url: https://github.com/Thoth-Station/
     template.openshift.io/long-description: >
       A buildconfig for Amun's inspect-hwinfo.
     template.openshift.io/provider-display-name: Red Hat, Inc.
+    thoth-station.ninja/template-version: 0.1.0
   labels:
     template: amun-inspect-hwinfo-buildconfig
     app: amun
@@ -21,6 +22,8 @@ objects:
     apiVersion: build.openshift.io/v1
     metadata:
       name: inspect-hwinfo
+      annotations:
+        thoth-station.ninja/template-version: 0.1.0
       labels:
         app: amun
         component: inspect-hwinfo
@@ -46,13 +49,35 @@ objects:
         sourceStrategy:
           from:
             kind: ImageStreamTag
-            name: python-36-centos7:latest
-          env: []
+            name: s2i-thoth-ubi8-py36:latest
+          env:
+            - name: ENABLE_PIPENV
+              value: "1"
+            - name: UPGRADE_PIP_TO_LATEST
+              value: ""
+            - name: "THOTH_DRY_RUN"
+              value: "1"
+            - name: "THOTH_ADVISE"
+              value: ${THOTH_ADVISE}
+            - name: "THAMOS_VERBOSE"
+              value: "1"
+            - name: "THAMOS_DEBUG"
+              value: "1"
+            - name: "THAMOS_CONFIG_TEMPLATE"
+              value: ".thothTemplate.yaml"
+            - name: "THAMOS_CONFIG_EXPAND_ENV"
+              value: "1"
+            - name: THOTH_STORAGES_GRAPH_CACHE
+              value: "graph_cache.sqlite3"
         type: Source
       triggers:
         - type: ConfigChange
         - type: ImageChange
           imageChange: {}
+        - type: "Generic"
+          generic:
+            secretReference:
+              name: generic-webhook-secret
 
 parameters:
   - description: Name of the github repository
@@ -72,3 +97,9 @@ parameters:
     required: true
     name: IMAGE_STREAM_TAG
     value: 'latest'
+
+  - description: Thamos Advise setup tag value
+    displayName: THOTH_ADVISE
+    required: true
+    name: THOTH_ADVISE
+    value: "1"
