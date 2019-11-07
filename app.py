@@ -891,7 +891,7 @@ if __name__ == "__main__":
             {
                 'cpu_type': cpu_type,
                 'cpu_info': cpu_info,
-                'cpu_feature': cpu_features,
+                'cpu_features': cpu_features,
                 'platform': platform,
             },
             hw_info_file,
