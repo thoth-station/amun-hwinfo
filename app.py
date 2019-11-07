@@ -14,6 +14,9 @@
 #  See LICENSES/cpuinfo.txt for details about copyright and
 #  rights to use.
 ####################################################################
+#
+# Additional changes for project Thoth by Thoth team.
+#
 
 """
 cpuinfo.
@@ -39,6 +42,7 @@ import subprocess
 import warnings
 import platform
 import inspect
+import cpuinfo as other_cpu_info
 
 is_cpu_amd_intel = False  # DEPRECATION WARNING: WILL BE REMOVED IN FUTURE RELEASE
 _OUTPUT_JSON_PATH = "/home/amun/hwinfo/info.json"
@@ -857,12 +861,40 @@ if __name__ == "__main__":
 
     _VALUE_MAPPING = {"CPUInfoBase__get_nbits": "nbits", "getNCPUs": "ncpus"}
 
-    cpu_info = {}
+    cpu_type = {}
     for name in dir(cpuinfo):
         if name[0] == "_" and name[1] != "_":
             name = name[1:]  # Avoid leading _
             r = getattr(cpu, name)()
-            cpu_info[_VALUE_MAPPING.get(name, name)] = r
+            cpu_type[_VALUE_MAPPING.get(name, name)] = r
 
-    with open(_OUTPUT_JSON_PATH, "w") as hw_info_file:
-        json.dump({"cpu": cpu_info, "platform": platform}, hw_info_file, sort_keys=True, indent=2)
+    cpu_info = other_cpu_info.get_cpu_info()
+    cpu_info.pop("python_version")
+
+    cpu_features = {}
+    keys = frozenset((
+        "hz_advertised",
+        "hz_actual",
+        "hz_advertised_raw",
+        "hz_actual_raw",
+        "l3_cache_size",
+        "l2_cache_size",
+        "l1_data_cache_size",
+        "l1_instruction_cache_size",
+        "flags"
+    ))
+    for key in keys:
+        cpu_features[key] = cpu_info.pop(key, None)
+
+    with open(_OUTPUT_JSON_PATH, 'w') as hw_info_file:
+        json.dump(
+            {
+                'cpu_type': cpu_type,
+                'cpu_info': cpu_info,
+                'cpu_feature': cpu_features,
+                'platform': platform,
+            },
+            hw_info_file,
+            sort_keys=True,
+            indent=2
+        )
