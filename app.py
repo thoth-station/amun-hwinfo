@@ -36,7 +36,6 @@ __all__ = ["cpu"]
 import json
 import sys
 import re
-import types
 import os
 import subprocess
 import warnings
@@ -45,7 +44,7 @@ import inspect
 import cpuinfo as other_cpu_info
 
 is_cpu_amd_intel = False  # DEPRECATION WARNING: WILL BE REMOVED IN FUTURE RELEASE
-_OUTPUT_JSON_PATH = "/home/amun/hwinfo/info.json"
+_OUTPUT_JSON_PATH = os.getenv("THOTH_OUTPUT_PATH", "/home/amun/hwinfo/info.json")
 
 
 def getoutput(cmd, successful_status=(0,), stacklevel=1):
