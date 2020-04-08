@@ -885,6 +885,10 @@ if __name__ == "__main__":
     for key in keys:
         cpu_features[key] = cpu_info.pop(key, None)
 
+    dir_name = os.path.dirname(_OUTPUT_JSON_PATH)
+    if dir_name:
+        os.makedirs(dir_name, exist_ok=True)
+
     with open(_OUTPUT_JSON_PATH, 'w') as hw_info_file:
         json.dump(
             {
