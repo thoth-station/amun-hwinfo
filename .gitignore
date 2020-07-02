@@ -1,0 +1,5 @@
+.vscode
+amun/__pycache__/
+*.pyc
+.vault_pass
+.mypy_cache/*

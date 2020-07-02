@@ -39,7 +39,6 @@ import re
 import os
 import subprocess
 import warnings
-import platform
 import inspect
 import cpuinfo as other_cpu_info
 
@@ -96,7 +95,7 @@ class CPUInfoBase(object):
     def _try_call(self, func):
         try:
             return func()
-        except Exception as e:
+        except Exception:
             pass
 
     def __getattr__(self, name):
@@ -272,7 +271,7 @@ class LinuxCPUInfo(CPUInfoBase):
     def _is_XEON(self):
         return re.match(r".*?XEON\b", self.info[0]["model name"], re.IGNORECASE) is not None
 
-    _is_Xeon = _is_XEON
+    _is_Xeon = _is_XEON  # noqa: N815
 
     # Power
     def _is_Power(self):
@@ -395,7 +394,7 @@ class IRIXCPUInfo(CPUInfoBase):
     def get_ip(self):
         try:
             return self.info.get("MACHINE")
-        except Exception as e:
+        except Exception:
             pass
 
     def __machine(self, n):
@@ -697,7 +696,7 @@ class Win32CPUInfo(CPUInfoBase):
                                     info[-1]["Family"] = int(srch.group("FML"))
                                     info[-1]["Model"] = int(srch.group("MDL"))
                                     info[-1]["Stepping"] = int(srch.group("STP"))
-        except Exception as e:
+        except Exception:
             print(sys.exc_value, "(ignoring)")
         self.__class__.info = info
 
@@ -871,17 +870,19 @@ if __name__ == "__main__":
     cpu_info.pop("python_version")
 
     cpu_features = {}
-    keys = frozenset((
-        "hz_advertised",
-        "hz_actual",
-        "hz_advertised_raw",
-        "hz_actual_raw",
-        "l3_cache_size",
-        "l2_cache_size",
-        "l1_data_cache_size",
-        "l1_instruction_cache_size",
-        "flags"
-    ))
+    keys = frozenset(
+        (
+            "hz_advertised",
+            "hz_actual",
+            "hz_advertised_raw",
+            "hz_actual_raw",
+            "l3_cache_size",
+            "l2_cache_size",
+            "l1_data_cache_size",
+            "l1_instruction_cache_size",
+            "flags",
+        )
+    )
     for key in keys:
         cpu_features[key] = cpu_info.pop(key, None)
 
@@ -889,15 +890,10 @@ if __name__ == "__main__":
     if dir_name:
         os.makedirs(dir_name, exist_ok=True)
 
-    with open(_OUTPUT_JSON_PATH, 'w') as hw_info_file:
+    with open(_OUTPUT_JSON_PATH, "w") as hw_info_file:
         json.dump(
-            {
-                'cpu_type': cpu_type,
-                'cpu_info': cpu_info,
-                'cpu_features': cpu_features,
-                'platform': platform,
-            },
+            {"cpu_type": cpu_type, "cpu_info": cpu_info, "cpu_features": cpu_features, "platform": platform,},
             hw_info_file,
             sort_keys=True,
-            indent=2
+            indent=2,
         )
