@@ -42,6 +42,7 @@ import warnings
 import inspect
 import cpuinfo as other_cpu_info
 
+__version__ = "0.1.0"
 is_cpu_amd_intel = False  # DEPRECATION WARNING: WILL BE REMOVED IN FUTURE RELEASE
 _OUTPUT_JSON_PATH = os.getenv("THOTH_OUTPUT_PATH", "/home/amun/hwinfo/info.json")
 
