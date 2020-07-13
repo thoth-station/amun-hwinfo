@@ -854,7 +854,7 @@ else:
 
 
 cpu = cpuinfo()
-platform = platforminfo()
+platform_info = platforminfo()
 
 
 if __name__ == "__main__":
@@ -894,7 +894,7 @@ if __name__ == "__main__":
 
     with open(_OUTPUT_JSON_PATH, "w") as hw_info_file:
         json.dump(
-            {"cpu_type": cpu_type, "cpu_info": cpu_info, "cpu_features": cpu_features, "platform": platform,},
+            {"cpu_type": cpu_type, "cpu_info": cpu_info, "cpu_features": cpu_features, "platform": platform_info,},
             hw_info_file,
             sort_keys=True,
             indent=2,
