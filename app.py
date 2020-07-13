@@ -37,6 +37,7 @@ import json
 import sys
 import re
 import os
+import platform
 import subprocess
 import warnings
 import inspect
