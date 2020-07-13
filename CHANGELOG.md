@@ -25,3 +25,7 @@
 * The image built is s2i
 * Update README file and provide a brief info
 * Initial implementation of inspect-hwconfig
+
+## Release 0.1.2 (2020-07-13T15:58:08)
+* separating platform from platform_info
+* include platform package for amun-hwinfo (#26)
